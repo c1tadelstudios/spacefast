@@ -161,6 +161,7 @@ Spacefast has built-in app sign-in (Google, Gravatar, Spacefast accounts) for it
 - **Invite-only** is just "the email must already be in `users`". Inviting someone = inserting their email.
 - Sign the session cookie with HMAC-SHA256 via **Web Crypto** (`crypto.subtle`) so it works in middleware too. Store `{ userId, email, isAdmin, expiry }`.
 - In `middleware.ts`, verify the cookie, **delete any client-sent identity headers**, then set `x-user-id` / `x-is-admin` for your API routes.
+- **Let app assets through the gate.** Exempt `/manifest.webmanifest`, `favicon`/`icon`/`apple-icon` files and your home-screen icons from the sign-in redirect — otherwise browsers get your login page instead of the manifest and "Add to Home Screen" loses its name and icon. Also note Next.js only serves `favicon.ico`, `icon.*` and `apple-icon.*` from `app/`; other icon files belong in `public/`.
 
 ## 8. Replace row-level security
 
@@ -250,6 +251,7 @@ Moving only the app's subdomain (e.g. `app.example.com`) keeps your marketing si
 | Storage `put is not a function` | Binding is `upload/get/delete`, ids assigned by the platform | Store returned ids in your database |
 | Upload rejected | 5 MiB per-file limit | Shrink images in the browser |
 | Vercel site broke after merging | Vercel still deploys `main` | Disconnect Vercel's Git integration before merging |
+| "Add to Home Screen" lost its icon/name | New auth middleware redirects `/manifest.webmanifest` and icons to the login page | Exempt the manifest and icon files from the sign-in check |
 | Domain stuck pending | Old CNAME still present | Delete it; add A + TXT records |
 | Domain verification `failed`: `duplicate_verification_records` | Two `atomic-domain-…` TXT values on the hostname | Keep only the value Spacefast lists |
 | Agent key sees the wrong Space | Handoff minted under another team | Switch teams, then mint at `/start` |

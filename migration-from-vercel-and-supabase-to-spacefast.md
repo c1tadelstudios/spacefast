@@ -221,6 +221,7 @@ Moving only the app's subdomain (e.g. `app.example.com`) keeps your marketing si
    - **Delete the old CNAME** to Vercel. A name can't hold a CNAME alongside A or TXT records, and Spacefast's ownership check fails while it exists (`provider_claim_rejected … Remove any CNAME at this hostname`).
    - Add each A record as its **own entry**; many DNS panels take one IP per record.
    - Don't "edit the CNAME to an IP" — that publishes an invalid CNAME, not an A record.
+   - Publish **exactly one** verification TXT record. A second `atomic-domain-…` value on the same name fails verification with `duplicate_verification_records`.
    - Leave MX/email records and other hosts' records alone.
 3. Add `https://app.example.com/api/auth/google/callback` to the Google OAuth client.
 4. Remove the domain from the old Vercel project.
@@ -250,6 +251,7 @@ Moving only the app's subdomain (e.g. `app.example.com`) keeps your marketing si
 | Upload rejected | 5 MiB per-file limit | Shrink images in the browser |
 | Vercel site broke after merging | Vercel still deploys `main` | Disconnect Vercel's Git integration before merging |
 | Domain stuck pending | Old CNAME still present | Delete it; add A + TXT records |
+| Domain verification `failed`: `duplicate_verification_records` | Two `atomic-domain-…` TXT values on the hostname | Keep only the value Spacefast lists |
 | Agent key sees the wrong Space | Handoff minted under another team | Switch teams, then mint at `/start` |
 
 ---
